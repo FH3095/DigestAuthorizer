@@ -35,12 +35,12 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/BasePasswordCalculator.o \
 	${OBJECTDIR}/BasicCommunicator.o \
 	${OBJECTDIR}/CgiEnvironmentExtended.o \
 	${OBJECTDIR}/DigestPasswordCalculator.o \
 	${OBJECTDIR}/FCgiIO.o \
 	${OBJECTDIR}/MainHandler.o \
+	${OBJECTDIR}/MaintenanceWorker.o \
 	${OBJECTDIR}/main.o
 
 
@@ -68,11 +68,6 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/digestauthorizer: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	g++ -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/digestauthorizer ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/BasePasswordCalculator.o: BasePasswordCalculator.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/BasePasswordCalculator.o BasePasswordCalculator.cpp
-
 ${OBJECTDIR}/BasicCommunicator.o: BasicCommunicator.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
@@ -97,6 +92,11 @@ ${OBJECTDIR}/MainHandler.o: MainHandler.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/MainHandler.o MainHandler.cpp
+
+${OBJECTDIR}/MaintenanceWorker.o: MaintenanceWorker.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/MaintenanceWorker.o MaintenanceWorker.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}

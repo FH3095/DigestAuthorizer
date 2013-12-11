@@ -5,13 +5,13 @@
 #include <map>
 #include <chrono>
 #include <mutex>
+#include <atomic>
 
-#include "BasePasswordCalculator.h"
-
-class DigestPasswordCalculator : public BasePasswordCalculator
+class DigestPasswordCalculator
 {
 public:
-	class DigestParameter
+
+	class DigestPasswordParameter
 	{
 	public:
 
@@ -26,45 +26,67 @@ public:
 			MD5,
 			//MD5_SESS,
 		};
-		
-		DigestParameter()
-		: qop(AUTH), algo(MD5), nonce("")
+
+		DigestPasswordParameter()
+		: qop(AUTH), algo(MD5), nonce(""), userRealmPass("")
 		{
 		}
 
-		DigestParameter(QOP_TYPE qop, ALGORITHM algo, std::string& nonce)
-		: qop(qop), algo(algo), nonce(nonce)
+		DigestPasswordParameter(const QOP_TYPE qop, const ALGORITHM algo, const std::string& nonce, const std::string& realm, const std::string& user, const std::string& pass)
+		: DigestPasswordParameter(qop, algo, nonce, user + ":" + realm + ":" + pass)
+		{
+		}
+
+		DigestPasswordParameter(const QOP_TYPE qop, const ALGORITHM algo, const std::string& nonce, const std::string userRealmPass)
+		: qop(qop), algo(algo), nonce(nonce), userRealmPass(userRealmPass)
 		{
 		}
 
 		inline QOP_TYPE getQop() const
-		{	return qop;	}
+		{
+			return qop;
+		}
 
 		inline ALGORITHM getAlgorithm() const
-		{	return algo;	}
+		{
+			return algo;
+		}
 
-		inline std::string getNonce() const
-		{	return nonce;	}
+		inline const std::string& getNonce() const
+		{
+			return nonce;
+		}
+
+		inline const std::string& getUserRealmPass() const
+		{
+			return userRealmPass;
+		}
 
 	private:
 		QOP_TYPE qop;
 		ALGORITHM algo;
 		std::string nonce;
+		std::string userRealmPass;
 	};
+
 	DigestPasswordCalculator();
 	virtual ~DigestPasswordCalculator();
-	static DigestParameter generateDigestParameter();
-	virtual void prepareCalculatePassword(const DigestParameter& parameter);
-	virtual std::string calculatePassword(const std::string& pass);
+	static DigestPasswordParameter generateDigestParameter();
+	virtual std::string calculatePassword(const DigestPasswordParameter& parameter);
+
 	inline virtual bool isNonceStale()
-	{	return nonceIsStale;	}
+	{
+		return nonceIsStale;
+	}
 private:
-	void cleanupNonces();
-	DigestParameter parameter;
-	bool parameterSet;
+	static std::chrono::steady_clock::time_point cleanupNonces();
+	DigestPasswordParameter parameter;
 	bool nonceIsStale;
 	typedef std::map<std::string, std::chrono::steady_clock::time_point> NONCES_MAP;
 	static NONCES_MAP nonces;
 	static std::chrono::steady_clock::time_point lastCleanup;
 	static std::mutex noncesMutex;
+	static std::atomic<bool> initialized;
+
+	static std::chrono::steady_clock::duration conf_noncesValidTime;
 };

@@ -18,6 +18,7 @@
 #include "FCgiIO.h"
 #include "MainHandler.h"
 #include "BasicCommunicator.h"
+#include "MaintenanceWorker.h"
 
 using namespace std;
 using namespace cgicc;
