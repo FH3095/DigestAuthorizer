@@ -71,7 +71,7 @@ public:
 
 	DigestPasswordCalculator();
 	virtual ~DigestPasswordCalculator();
-	static DigestPasswordParameter generateDigestParameter();
+	static DigestPasswordParameter generateDigestParameter(const DigestPasswordParameter::QOP_TYPE qop, const DigestPasswordParameter::ALGORITHM algo, const std::string& realm, const std::string& user, const std::string& password);
 	virtual std::string calculatePassword(const DigestPasswordParameter& parameter);
 
 	inline virtual bool isNonceStale()
@@ -80,8 +80,7 @@ public:
 	}
 private:
 	static std::chrono::steady_clock::time_point cleanupNonces();
-	static std::string convertBinToHex(const unsigned char* bin, unsigned int len);
-	DigestPasswordParameter parameter;
+	static std::string convertBinToHex(const unsigned char* bin, const unsigned int len);
 	bool nonceIsStale;
 	typedef std::map<std::string, std::chrono::steady_clock::time_point> NONCES_MAP;
 	static NONCES_MAP nonces;
@@ -89,6 +88,7 @@ private:
 	static std::mutex noncesMutex;
 	static std::atomic<bool> initialized;
 
-	static std::chrono::steady_clock::duration conf_noncesValidTime;
+	static std::chrono::steady_clock::duration conf_nonceValidTime;
 	static unsigned int conf_nonceBytes;
+	static bool conf_pseudoRandAllowed;
 };

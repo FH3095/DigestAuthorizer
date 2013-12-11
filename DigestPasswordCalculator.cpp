@@ -5,8 +5,9 @@
 #include <openssl/md5.h>
 #include "MaintenanceWorker.h"
 
-std::chrono::steady_clock::duration DigestPasswordCalculator::conf_noncesValidTime = std::chrono::minutes(60);
+std::chrono::steady_clock::duration DigestPasswordCalculator::conf_nonceValidTime = std::chrono::minutes(60);
 unsigned int DigestPasswordCalculator::conf_nonceBytes = MD5_DIGEST_LENGTH;
+bool DigestPasswordCalculator::conf_pseudoRandAllowed = true;
 
 DigestPasswordCalculator::NONCES_MAP DigestPasswordCalculator::nonces;
 std::chrono::steady_clock::time_point DigestPasswordCalculator::lastCleanup = std::chrono::steady_clock::now();
@@ -35,12 +36,34 @@ std::string DigestPasswordCalculator::calculatePassword(const DigestPasswordPara
 	return convertBinToHex(rawMD5Result, MD5_DIGEST_LENGTH);
 }
 
-DigestPasswordCalculator::DigestPasswordParameter DigestPasswordCalculator::generateDigestParameter()
+DigestPasswordCalculator::DigestPasswordParameter DigestPasswordCalculator::generateDigestParameter(const DigestPasswordParameter::QOP_TYPE qop, const DigestPasswordParameter::ALGORITHM algo, const std::string& realm, const std::string& user, const std::string& password)
 {
-	return DigestPasswordParameter();
+	std::unique_ptr<unsigned char> nonceData(new unsigned char(conf_nonceBytes));
+
+	if (conf_pseudoRandAllowed)
+	{
+		if (-1 == RAND_pseudo_bytes(nonceData.get(), conf_nonceBytes))
+		{
+			throw std::runtime_error("Can't get pseudo-random bytes!");
+		}
+	}
+	else
+	{
+		if (1 != RAND_bytes(nonceData.get(), conf_nonceBytes))
+		{
+			throw std::runtime_error("Can't get random bytes!");
+		}
+	}
+
+	std::string nonce = convertBinToHex(nonceData.get(), conf_nonceBytes);
+
+	std::lock_guard<std::mutex> lock(noncesMutex);
+	nonces[nonce] = std::chrono::steady_clock::now() + conf_nonceValidTime;
+
+	return DigestPasswordParameter(qop, algo, nonce, realm, user, password);
 }
 
-std::string DigestPasswordCalculator::convertBinToHex(const unsigned char* bin, unsigned int len)
+std::string DigestPasswordCalculator::convertBinToHex(const unsigned char* bin, const unsigned int len)
 {
 	static const char hexDigits[] = "0123456789ABCDEF";
 
