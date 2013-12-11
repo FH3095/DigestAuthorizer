@@ -1,13 +1,12 @@
 #include "DigestPasswordCalculator.h"
 
 #include <memory>
-#include <iterator>
-#include <algorithm>
 #include <openssl/rand.h>
 #include <openssl/md5.h>
 #include "MaintenanceWorker.h"
 
 std::chrono::steady_clock::duration DigestPasswordCalculator::conf_noncesValidTime = std::chrono::minutes(60);
+unsigned int DigestPasswordCalculator::conf_nonceBytes = MD5_DIGEST_LENGTH;
 
 DigestPasswordCalculator::NONCES_MAP DigestPasswordCalculator::nonces;
 std::chrono::steady_clock::time_point DigestPasswordCalculator::lastCleanup = std::chrono::steady_clock::now();
@@ -30,24 +29,30 @@ DigestPasswordCalculator::~DigestPasswordCalculator()
 
 std::string DigestPasswordCalculator::calculatePassword(const DigestPasswordParameter& parameter)
 {
-	static const char hexDigits[] = "0123456789ABCDEF";
 	unsigned char rawMD5Result[MD5_DIGEST_LENGTH];
 	MD5((const unsigned char*)parameter.getUserRealmPass().c_str(), parameter.getUserRealmPass().size(), rawMD5Result);
 
-	std::string result("");
-	result.reserve(MD5_DIGEST_LENGTH * 2);
-	for (unsigned int i = 0; i < MD5_DIGEST_LENGTH; ++i)
-	{
-		result.push_back(hexDigits[(rawMD5Result[i] >> 4) & 0xF]);
-		result.push_back(hexDigits[rawMD5Result[i] & 0xF]);
-	}
-
-	return result;
+	return convertBinToHex(rawMD5Result, MD5_DIGEST_LENGTH);
 }
 
 DigestPasswordCalculator::DigestPasswordParameter DigestPasswordCalculator::generateDigestParameter()
 {
 	return DigestPasswordParameter();
+}
+
+std::string DigestPasswordCalculator::convertBinToHex(const unsigned char* bin, unsigned int len)
+{
+	static const char hexDigits[] = "0123456789ABCDEF";
+
+	std::string result("");
+	result.reserve(len * 2);
+	for (unsigned int i = 0; i < len; ++i)
+	{
+		result.push_back(hexDigits[(bin[i] >> 4) & 0xF]);
+		result.push_back(hexDigits[bin[i] & 0xF]);
+	}
+
+	return result;
 }
 
 std::chrono::steady_clock::time_point DigestPasswordCalculator::cleanupNonces()

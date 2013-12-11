@@ -80,6 +80,7 @@ public:
 	}
 private:
 	static std::chrono::steady_clock::time_point cleanupNonces();
+	static std::string convertBinToHex(const unsigned char* bin, unsigned int len);
 	DigestPasswordParameter parameter;
 	bool nonceIsStale;
 	typedef std::map<std::string, std::chrono::steady_clock::time_point> NONCES_MAP;
@@ -89,4 +90,5 @@ private:
 	static std::atomic<bool> initialized;
 
 	static std::chrono::steady_clock::duration conf_noncesValidTime;
+	static unsigned int conf_nonceBytes;
 };
