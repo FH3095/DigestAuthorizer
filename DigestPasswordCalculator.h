@@ -11,7 +11,6 @@
 class DigestPasswordCalculator : public BasePasswordCalculator
 {
 public:
-
 	class DigestParameter
 	{
 	public:
@@ -38,13 +37,23 @@ public:
 		{
 		}
 
-		const QOP_TYPE qop;
-		const ALGORITHM algo;
-		const std::string nonce;
+		inline QOP_TYPE getQop() const
+		{	return qop;	}
+
+		inline ALGORITHM getAlgorithm() const
+		{	return algo;	}
+
+		inline std::string getNonce() const
+		{	return nonce;	}
+
+	private:
+		QOP_TYPE qop;
+		ALGORITHM algo;
+		std::string nonce;
 	};
 	DigestPasswordCalculator();
 	virtual ~DigestPasswordCalculator();
-	static virtual DigestParameter generateDigestParameter();
+	static DigestParameter generateDigestParameter();
 	virtual void prepareCalculatePassword(const DigestParameter& parameter);
 	virtual std::string calculatePassword(const std::string& pass);
 	inline virtual bool isNonceStale()
