@@ -80,6 +80,7 @@ public:
 	}
 private:
 	static std::chrono::steady_clock::time_point cleanupNonces();
+	static std::string calcHash(DigestPasswordParameter::ALGORITHM algo,const std::string& data);
 	static std::string convertBinToHex(const unsigned char* bin, const unsigned int len);
 	bool nonceIsStale;
 	typedef std::map<std::string, std::chrono::steady_clock::time_point> NONCES_MAP;

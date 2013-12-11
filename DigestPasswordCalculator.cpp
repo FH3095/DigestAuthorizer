@@ -30,21 +30,7 @@ DigestPasswordCalculator::~DigestPasswordCalculator()
 
 std::string DigestPasswordCalculator::calculatePassword(const DigestPasswordParameter& parameter)
 {
-	unsigned int dataLength;
-	std::unique_ptr<unsigned char> resultData;
-
-	switch (parameter.getAlgorithm())
-	{
-	case DigestPasswordParameter::MD5:
-		dataLength = MD5_DIGEST_LENGTH;
-		resultData.reset(new unsigned char(dataLength));
-		MD5((const unsigned char*)parameter.getUserRealmPass().c_str(), parameter.getUserRealmPass().size(), resultData.get());
-		break;
-	default:
-		throw std::logic_error("Unimplemented Digest-Hash-Algo: " + parameter.getAlgorithm());
-	}
-
-	return convertBinToHex(resultData.get(), dataLength);
+	return calcHash(parameter.getAlgorithm(),parameter.getUserRealmPass());
 }
 
 DigestPasswordCalculator::DigestPasswordParameter DigestPasswordCalculator::generateDigestParameter(const DigestPasswordParameter::QOP_TYPE qop, const DigestPasswordParameter::ALGORITHM algo, const std::string& realm, const std::string& user, const std::string& password)
@@ -72,6 +58,25 @@ DigestPasswordCalculator::DigestPasswordParameter DigestPasswordCalculator::gene
 	nonces[nonce] = std::chrono::steady_clock::now() + conf_nonceValidTime;
 
 	return DigestPasswordParameter(qop, algo, nonce, realm, user, password);
+}
+
+std::string DigestPasswordCalculator::calcHash(DigestPasswordParameter::ALGORITHM algo, const std::string& data)
+{
+	unsigned int dataLength;
+	std::unique_ptr<unsigned char> resultData;
+
+	switch (algo)
+	{
+	case DigestPasswordParameter::MD5:
+		dataLength = MD5_DIGEST_LENGTH;
+		resultData.reset(new unsigned char(dataLength));
+		MD5((const unsigned char*)data.c_str(), data.size(), resultData.get());
+		break;
+	default:
+		throw std::logic_error("Unimplemented Digest-Hash-Algo: " + algo);
+	}
+
+	return convertBinToHex(resultData.get(), dataLength);
 }
 
 std::string DigestPasswordCalculator::convertBinToHex(const unsigned char* bin, const unsigned int len)
