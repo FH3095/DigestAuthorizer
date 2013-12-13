@@ -6,7 +6,6 @@
                    projectFiles="true">
       <logicalFolder name="f2" displayName="Communicator" projectFiles="true">
         <itemPath>BaseCommunicator.h</itemPath>
-        <itemPath>BasicCommunicator.h</itemPath>
         <itemPath>DigestCommunicator.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="Database" projectFiles="true">
@@ -28,7 +27,7 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f3" displayName="Communicator" projectFiles="true">
-        <itemPath>BasicCommunicator.cpp</itemPath>
+        <itemPath>DigestCommunicator.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="Database" projectFiles="true">
       </logicalFolder>
@@ -85,13 +84,11 @@
       </compileType>
       <item path="BaseCommunicator.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="BasicCommunicator.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="BasicCommunicator.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="CgiEnvironmentExtended.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="CgiEnvironmentExtended.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="DigestCommunicator.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="DigestCommunicator.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -151,13 +148,11 @@
       </compileType>
       <item path="BaseCommunicator.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="BasicCommunicator.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="BasicCommunicator.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="CgiEnvironmentExtended.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="CgiEnvironmentExtended.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="DigestCommunicator.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="DigestCommunicator.h" ex="false" tool="3" flavor2="0">
       </item>

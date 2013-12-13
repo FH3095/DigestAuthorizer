@@ -17,7 +17,7 @@
 
 #include "FCgiIO.h"
 #include "MainHandler.h"
-#include "BasicCommunicator.h"
+#include "DigestCommunicator.h"
 
 using namespace std;
 using namespace cgicc;
@@ -57,8 +57,8 @@ void callback()
 {
 	cgicc::FCgiIO& IO = MainHandler::getThreadObjects().getIO();
 	cgicc::Cgicc& CGI = MainHandler::getThreadObjects().getCGI();
-	BasicCommunicator bc;
-	BasicCommunicator::AUTHORIZE_RESULT authorizeResult = bc.checkAuthorization();
+	DigestCommunicator bc;
+	DigestCommunicator::AUTHORIZE_RESULT authorizeResult = bc.checkAuthorization();
 
 	if (bc.NOT_PRESENT == authorizeResult)
 	{
