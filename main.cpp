@@ -18,6 +18,7 @@
 #include "FCgiIO.h"
 #include "MainHandler.h"
 #include "DigestCommunicator.h"
+#include "DigestPasswordCalculator.h"
 
 using namespace std;
 using namespace cgicc;
@@ -66,12 +67,13 @@ void callback()
 	}
 	if (authorizeResult != bc.SUCCESS)
 	{
-		return;
+		//return;
 	}
 	static int count = 0;
 
 	try
 	{
+		IO << "Status: 403 Forbidden" << endl;
 		// Output the HTTP headers for an HTML document, and the HTML 4.0 DTD info
 		IO << HTTPHTMLHeader() << HTMLDoctype(HTMLDoctype::eStrict) << endl
 				<< html().set("lang", "en").set("dir", "ltr") << endl;
@@ -92,7 +94,8 @@ void callback()
 		dumpEnvironment(IO.err(), CGI.getEnvironment());
 		// Close the document
 		IO << body() << html();
-	} catch (const exception&)
+	}
+	catch (const exception&)
 	{
 		// handle error condition
 	}

@@ -56,6 +56,7 @@ std::string DigestPasswordCalculator::generateNonce()
 
 	HASH_DATA_PAIR hashData = calcHash(conf_nonceAlgorithm, tmpBuffer.data(), tmpBuffer.size());
 
+	tmpBuffer.clear();
 	tmpBuffer.reserve(sizeof (timePoint) + hashData.second);
 	tmpBuffer.insert(tmpBuffer.begin(), reinterpret_cast<const unsigned char*>(&timePoint), reinterpret_cast<const unsigned char*>(&timePoint) + sizeof (timePoint));
 	tmpBuffer.insert(tmpBuffer.end(), hashData.first.get(), hashData.first.get() + hashData.second);
