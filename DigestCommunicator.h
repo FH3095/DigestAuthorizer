@@ -3,6 +3,8 @@
 
 #include "BaseCommunicator.h"
 #include "MainHandler.h"
+#include "DigestPasswordCalculator.h"
+#include <map>
 
 class DigestCommunicator : public BaseCommunicator
 {
@@ -36,5 +38,16 @@ public:
 				<< std::endl;
 	}
 private:
-	bool nonceStale;
+	void splitAuthParameter();
+	/// Returns the character AFTER nextCharacter
+	std::string::size_type compareIgnoreSpace(const std::string& haystack, std::string::size_type start,
+											const char* needle, const char nextCharacter);
+	std::string::size_type skipSpace(const std::string& str,
+									std::string::size_type start = 0,
+									std::string::size_type end = std::string::npos);
+	DigestPasswordCalculator passCalc;
+	typedef std::map<std::string, std::string> AUTH_PARAMETER_MAP;
+	AUTH_PARAMETER_MAP authParameter;
+	bool parameterInitialized;
+	bool parameterValid;
 };
