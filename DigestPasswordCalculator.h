@@ -26,6 +26,8 @@ public:
 		{
 			MD5,
 			//MD5_SESS,
+			SHA256,
+			//SHA256_SESS,
 			SHA512,
 			//SHA512_SESS,
 		};

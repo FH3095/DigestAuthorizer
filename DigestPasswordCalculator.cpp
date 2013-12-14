@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <openssl/rand.h>
 #include <openssl/md5.h>
+#include <openssl/sha.h>
 
 std::chrono::steady_clock::duration DigestPasswordCalculator::conf_nonceValidTime = std::chrono::minutes(60);
 bool DigestPasswordCalculator::conf_pseudoRandAllowed = true;
@@ -106,6 +107,16 @@ DigestPasswordCalculator::HASH_DATA_PAIR DigestPasswordCalculator::calcHash(cons
 		result.second = MD5_DIGEST_LENGTH;
 		result.first.reset(new unsigned char(result.second));
 		MD5(data, len, result.first.get());
+		break;
+	case DigestRequestParameter::SHA256:
+		result.second = SHA256_DIGEST_LENGTH;
+		result.first.reset(new unsigned char(result.second));
+		SHA256(data, len, result.first.get());
+		break;
+	case DigestRequestParameter::SHA512:
+		result.second = SHA512_DIGEST_LENGTH;
+		result.first.reset(new unsigned char(result.second));
+		SHA512(data, len, result.first.get());
 		break;
 	default:
 		throw std::logic_error("Unimplemented Digest-Hash-Algo: " + algo);

@@ -1,14 +1,14 @@
 
 #pragma once
 
-#include "BaseAuthorizer.h"
+#include <openssl/md5.h>
 
-class TestAuthorizer : public BaseAuthorizer
+class TestAuthorizer
 {
 public:
-	virtual bool checkAuthorization(const std::string& user, const std::string& pass, const BasePasswordCalculator& calc)
+	virtual bool checkAuthorization(const std::string& user, const std::string& realm)
 	{
-		if(0 == user.compare("foo") && 0 == pass.compare("bar"))
+		if(0 == user.compare("foo"))
 		{
 			return true;
 		}
