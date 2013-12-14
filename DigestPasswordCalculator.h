@@ -190,8 +190,8 @@ public:
 
 	DigestPasswordCalculator();
 	virtual ~DigestPasswordCalculator();
-	static std::string generateNonce(const std::chrono::steady_clock::duration::rep timePoint = std::chrono::steady_clock::now().time_since_epoch().count());
-	static CHECK_RESPONSE_RESULT checkResponseResult(const DigestResponseParameter& param, const std::string& userRealmPassword);
+	std::string generateNonce(const std::chrono::steady_clock::duration::rep timePoint = std::chrono::steady_clock::now().time_since_epoch().count());
+	CHECK_RESPONSE_RESULT checkResponseResult(const DigestResponseParameter& param, const std::string& userRealmPassword);
 private:
 	static std::string convertBinToHex(const unsigned char* const bin, const unsigned int bytes);
 	static void convertHexToBin(unsigned char* target, const unsigned int bytes, const std::string& source, const unsigned int start = 0);
