@@ -91,7 +91,7 @@ void callback()
 				<< "count: " << count++ << br() << endl
 				<< "Form Elements:" << br() << endl;
 
-		dumpEnvironment(IO.err(), CGI.getEnvironment());
+		dumpEnvironment(IO, CGI.getEnvironment());
 		// Close the document
 		IO << body() << html();
 	}
