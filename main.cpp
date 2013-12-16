@@ -58,21 +58,22 @@ void callback()
 {
 	cgicc::FCgiIO& IO = MainHandler::getThreadObjects().getIO();
 	cgicc::Cgicc& CGI = MainHandler::getThreadObjects().getCGI();
-	DigestCommunicator bc;
-	DigestCommunicator::AUTHORIZE_RESULT authorizeResult = bc.checkAuthorization();
-
-	if (bc.NOT_PRESENT == authorizeResult)
-	{
-		bc.sendAuthorizationRequest();
-	}
-	if (authorizeResult != bc.SUCCESS)
-	{
-		//return;
-	}
-	static int count = 0;
-
 	try
 	{
+		DigestCommunicator bc;
+		DigestCommunicator::AUTHORIZE_RESULT authorizeResult = bc.checkAuthorization();
+
+		if (bc.NOT_PRESENT == authorizeResult)
+		{
+			bc.sendAuthorizationRequest();
+			return;
+		}
+		if (authorizeResult != bc.SUCCESS)
+		{
+			//return;
+		}
+		static int count = 0;
+
 		IO << "Status: 403 Forbidden" << endl;
 		// Output the HTTP headers for an HTML document, and the HTML 4.0 DTD info
 		IO << HTTPHTMLHeader() << HTMLDoctype(HTMLDoctype::eStrict) << endl
@@ -95,9 +96,12 @@ void callback()
 		// Close the document
 		IO << body() << html();
 	}
-	catch (const exception&)
+	catch (const exception& e)
 	{
-		// handle error condition
+		IO << "Status: 500 Internal Server error" << endl;
+		IO << "Content-Type: text/plain" << endl;
+		IO << endl;
+
 	}
 }
 
