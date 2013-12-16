@@ -196,7 +196,7 @@ private:
 	static std::string convertBinToHex(const unsigned char* const bin, const unsigned int bytes);
 	static void convertHexToBin(unsigned char* target, const unsigned int bytes, const std::string& source, const unsigned int start = 0);
 	static inline unsigned char convertHexToBin(const char data);
-	static std::shared_ptr<unsigned char> generateRandom(const unsigned int len);
+	static void generateRandom(unsigned char* const result, const unsigned int len);
 
 	static std::vector<unsigned char> nonceKeyStart;
 	static std::vector<unsigned char> nonceKeyEnd;

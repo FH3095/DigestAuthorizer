@@ -16,15 +16,13 @@ DigestPasswordCalculator::DigestPasswordCalculator()
 	bool temp = false;
 	if (initialized.compare_exchange_strong(temp, true))
 	{
-		std::shared_ptr<unsigned char> temp;
-
-		temp = generateRandom(conf_nonceKeyBytes);
 		nonceKeyStart.clear();
-		nonceKeyStart.insert(nonceKeyStart.begin(), temp.get(), temp.get() + conf_nonceKeyBytes);
+		nonceKeyStart.resize(conf_nonceKeyBytes, 0);
+		generateRandom(nonceKeyStart.data(), conf_nonceKeyBytes);
 
-		temp = generateRandom(conf_nonceKeyBytes);
 		nonceKeyEnd.clear();
-		nonceKeyEnd.insert(nonceKeyEnd.begin(), temp.get(), temp.get() + conf_nonceKeyBytes);
+		nonceKeyEnd.resize(conf_nonceKeyBytes, 0);
+		generateRandom(nonceKeyEnd.data(), conf_nonceKeyBytes);
 	}
 }
 
@@ -107,26 +105,23 @@ DigestPasswordCalculator::CHECK_RESPONSE_RESULT DigestPasswordCalculator::checkR
 	return SUCCESS;
 }
 
-std::shared_ptr<unsigned char> DigestPasswordCalculator::generateRandom(const unsigned int len)
+void DigestPasswordCalculator::generateRandom(unsigned char* const result,
+											  const unsigned int len)
 {
-	std::shared_ptr<unsigned char> result(new unsigned char(len));
-
 	if (conf_pseudoRandAllowed)
 	{
-		if (-1 == RAND_pseudo_bytes(result.get(), len))
+		if (-1 == RAND_pseudo_bytes(result, len))
 		{
 			throw std::runtime_error("Can't get pseudo-random bytes!");
 		}
 	}
 	else
 	{
-		if (1 != RAND_bytes(result.get(), len))
+		if (1 != RAND_bytes(result, len))
 		{
 			throw std::runtime_error("Can't get random bytes!");
 		}
 	}
-
-	return result;
 }
 
 std::string DigestPasswordCalculator::convertBinToHex(const unsigned char* const bin, const unsigned int bytes)
